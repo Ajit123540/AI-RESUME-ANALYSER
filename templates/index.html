@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="ResumeAI Intelligence Platform – Explainable candidate matching, evidence proof verification, recruiter simulations, salary estimation, and career trajectories.">
+    <title>ResumeAI Intelligence Platform v3.0</title>
+
+    <!-- Google Fonts & Font Awesome Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+
+<!-- Performance-Optimized Dynamic Canvas & Ambient Grid -->
+<canvas id="particles-canvas"></canvas>
+<div class="ambient-mesh"></div>
+<div class="aurora-container" aria-hidden="true">
+    <div class="aurora-orb orb-1"></div>
+    <div class="aurora-orb orb-2"></div>
+    <div class="aurora-orb orb-3"></div>
+</div>
+
+<!-- Toast Notification Container -->
+<div class="toast" id="toast" role="alert" aria-live="polite">
+    <i class="fas fa-circle-info" id="toast-icon"></i>
+    <span id="toast-msg">Notification</span>
+    <div class="toast-progress" id="toast-progress"></div>
+</div>
+
+<!-- Floating Back to Top Button -->
+<button class="back-to-top" id="back-to-top" title="Scroll to top" aria-label="Scroll to top">
+    <i class="fas fa-arrow-up"></i>
+</button>
+
+<div class="app-wrapper">
+<div class="glass-panel">
+
+    <!-- =====================================================================
+         TOP NAVIGATION BAR
+         ===================================================================== -->
+    <header class="top-navbar">
+        <a href="/" class="brand-logo" aria-label="ResumeAI Intelligence Home">
+            <div class="brand-icon"><i class="fas fa-brain"></i></div>
+            <span>ResumeAI</span>
+            <span class="brand-badge">Intelligence v3.0</span>
+        </a>
+
+        <nav class="nav-actions">
+            <div class="mode-control-wrap">
+                <span class="mode-label"><i class="fas fa-microchip"></i> Mode:</span>
+                <select id="analysis-mode" class="mode-select" aria-label="Analysis processing mode">
+                    <option value="local" selected>Local (Fast &amp; Free)</option>
+                    <option value="ai">AI-Assisted (OpenAI GPT)</option>
+                </select>
+            </div>
+
+            <div id="nav-user-container" class="nav-user-slot">
+                <a href="/login" class="nav-link" id="nav-signin-link">Sign In</a>
+                <a href="/signup" class="nav-cta" id="nav-signup-link">Get Started <i class="fas fa-arrow-right"></i></a>
+            </div>
+            <button class="icon-btn" id="history-open-btn" onclick="openHistoryModal()" title="View Scan History" aria-label="View Scan History">
+                <i class="fas fa-clock-rotate-left"></i>
+            </button>
+            <button class="icon-btn" id="theme-toggle" title="Toggle dark/light theme" aria-label="Toggle theme">
+                <i class="fas fa-moon" id="theme-icon"></i>
+            </button>
+        </nav>
+    </header>
+
+    <!-- =====================================================================
+         HERO SECTION
+         ===================================================================== -->
+    <section class="hero">
+        <span class="hero-kicker">
+            <i class="fas fa-sparkles"></i> Recruitment Intelligence · Explainable &amp; Fast
+            <span class="ai-status" id="ai-status" role="status" aria-live="polite">Checking AI status…</span>
+        </span>
+
+        <h1 class="hero-title">AI Resume<br>Intelligence Platform</h1>
+        <p class="hero-sub" id="analysis-mode-note">
+            Local mode processes resumes deterministically on this machine without paid external LLMs. Cover letters use structured templates, and tips are rule-based.
+        </p>
+
+        <div class="hero-stats">
+            <div class="stat-pill"><div class="dot"></div><span>Analysis Tools</span><strong>13 Modules</strong></div>
+            <div class="stat-pill"><div class="dot"></div><span>File Formats</span><strong>PDF, DOCX, TXT</strong></div>
+            <div class="stat-pill"><div class="dot"></div><span>Processing</span><strong>Instant / Sub-second</strong></div>
+            <div class="stat-pill"><div class="dot"></div><span>Upload Limit</span><strong>16 MB</strong></div>
+        </div>
+
+        <div class="hero-btns">
+            <a href="#single-panel" class="btn-primary" onclick="document.querySelector('[data-tab=single]').click()">
+                <i class="fas fa-bolt"></i> Run Analysis
+            </a>
+            <button class="btn-demo-quick" onclick="document.querySelector('[data-tab=github]').click()">
+                <i class="fab fa-github"></i> GitHub Code Verifier
+            </button>
+            <button class="btn-demo-quick" onclick="loadDemoProfile('fullstack')">
+                <i class="fas fa-wand-magic-sparkles"></i> Load Sample Tech Profile
+            </button>
+            <a href="/login" class="btn-ghost"><i class="fas fa-user-lock"></i> Recruiter Portal</a>
+        </div>
+    </section>
+
+    <!-- =====================================================================
+         SHARED WORKSPACE BAR (Cross-Tool Synergy)
+         ===================================================================== -->
+    <div class="workspace-sync-bar" id="workspace-sync-bar">
+        <div class="workspace-sync-info">
+            <i class="fas fa-link"></i>
+            <span id="sync-bar-text">Resume loaded in workspace. Apply to this tool?</span>
+        </div>
+        <div class="workspace-sync-actions">
+            <button class="workspace-sync-btn" onclick="applyWorkspaceDataToCurrentTab()">
+                <i class="fas fa-file-import"></i> Apply to Current Tool
+            </button>
+        </div>
+    </div>
+
+    <!-- =====================================================================
+         13-MODULE TAB NAVIGATION & CATEGORY FILTERING
+         ===================================================================== -->
+    <div class="tab-section-wrap">
+        <!-- Category Filter Pills -->
+        <div class="tab-category-filters" role="navigation" aria-label="Tool category filters">
+            <button class="cat-filter-btn active" data-cat="all"><i class="fas fa-grid-2"></i> All Tools (13)</button>
+            <button class="cat-filter-btn" data-cat="screening"><i class="fas fa-shield-halved"></i> Screening &amp; Audit (5)</button>
+            <button class="cat-filter-btn" data-cat="career"><i class="fas fa-compass"></i> Career &amp; Growth (3)</button>
+            <button class="cat-filter-btn" data-cat="prep"><i class="fas fa-briefcase"></i> Candidate Prep (5)</button>
+        </div>
+
+        <!-- Scrollable Tab Bar with Slider Pill -->
+        <div class="tab-nav-wrapper">
+            <button class="tab-nav-arrow left" id="tab-nav-left" title="Scroll left" aria-label="Scroll left"><i class="fas fa-chevron-left"></i></button>
+            <nav class="tab-nav" role="tablist">
+                <div class="tab-pill" id="tab-pill"></div>
+                <button class="tab-btn active" data-tab="single" data-category="screening" role="tab" aria-selected="true"><i class="fas fa-bolt"></i> Single Analysis</button>
+                <button class="tab-btn" data-tab="batch" data-category="screening" role="tab" aria-selected="false"><i class="fas fa-layer-group"></i> Batch Ranking</button>
+                <button class="tab-btn" data-tab="github" data-category="screening" role="tab" aria-selected="false"><i class="fab fa-github"></i> GitHub Verifier</button>
+                <button class="tab-btn" data-tab="recruiter" data-category="screening" role="tab" aria-selected="false"><i class="fas fa-user-astronaut"></i> Recruiter Lens</button>
+                <button class="tab-btn" data-tab="fairness" data-category="screening" role="tab" aria-selected="false"><i class="fas fa-scale-balanced"></i> Fairness Audit</button>
+                <button class="tab-btn" data-tab="career" data-category="career" role="tab" aria-selected="false"><i class="fas fa-route"></i> Career Paths</button>
+                <button class="tab-btn" data-tab="salary" data-category="career" role="tab" aria-selected="false"><i class="fas fa-coins"></i> Salary Estimator</button>
+                <button class="tab-btn" data-tab="roadmap" data-category="career" role="tab" aria-selected="false"><i class="fas fa-map-location-dot"></i> Learning Roadmap</button>
+                <button class="tab-btn" data-tab="version" data-category="prep" role="tab" aria-selected="false"><i class="fas fa-code-compare"></i> Version Diff</button>
+                <button class="tab-btn" data-tab="improve" data-category="prep" role="tab" aria-selected="false"><i class="fas fa-file-circle-check"></i> ATS Rebuilder</button>
+                <button class="tab-btn" data-tab="cover-letter" data-category="prep" role="tab" aria-selected="false"><i class="fas fa-envelope-open-text"></i> Cover Letter</button>
+                <button class="tab-btn" data-tab="ats" data-category="prep" role="tab" aria-selected="false"><i class="fas fa-eye"></i> ATS Simulator</button>
+                <button class="tab-btn" data-tab="interview" data-category="prep" role="tab" aria-selected="false"><i class="fas fa-microphone"></i> Mock Interview</button>
+            </nav>
+            <button class="tab-nav-arrow right" id="tab-nav-right" title="Scroll right" aria-label="Scroll right"><i class="fas fa-chevron-right"></i></button>
+        </div>
+    </div>
+
+    <!-- =====================================================================
+         PANEL 1: SINGLE ANALYSIS
+         ===================================================================== -->
+    <section id="single-panel" class="tab-panel active" role="tabpanel" aria-labelledby="tab-single">
+        <div class="panel-intro-card">
+            <div>
+                <div class="panel-intro-title"><i class="fas fa-bolt" style="color:var(--c-blue);"></i> Deep Multidimensional Resume Analysis</div>
+                <div class="panel-intro-desc">Upload a resume and optional job description to evaluate skill proof, calculate explainable fit, discover implicit competencies, and audit claims.</div>
+            </div>
+            <button class="btn-subtle" onclick="loadDemoProfile('fullstack')"><i class="fas fa-file-code"></i> Use Sample Resume</button>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="single-file">
+                <span class="form-label-left"><i class="fas fa-cloud-arrow-up"></i> Upload Candidate Resume</span>
+                <span class="badge-optional">PDF, DOCX, DOC, TXT · Up to 16 MB</span>
+            </label>
+            <div class="dropzone" id="single-dz">
+                <span class="dropzone-icon"><i class="fas fa-file-arrow-up"></i></span>
+                <div class="dropzone-title">Drag &amp; drop candidate resume file here</div>
+                <div class="dropzone-sub">or click to browse your device</div>
+                <input type="file" id="single-file" style="display:none;" accept=".pdf,.docx,.doc,.txt">
+            </div>
+            <div class="doc-card" id="single-doc-card">
+                <div style="display:flex; align-items:center;">
+                    <div class="doc-card-icon" id="single-doc-icon"><i class="fas fa-file-pdf"></i></div>
+                    <div>
+                        <div style="font-weight:700; color:var(--text-1);" id="single-file-name">resume.pdf</div>
+                        <div style="font-size:0.8rem; color:var(--c-green);"><i class="fas fa-check-circle"></i> Ready for Analysis</div>
+                    </div>
+                </div>
+                <button class="doc-card-remove" id="single-remove" title="Remove file"><i class="fas fa-xmark"></i></button>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="single-job" class="form-label">
+                <span class="form-label-left"><i class="fas fa-briefcase"></i> Target Job Description</span>
+                <span class="char-counter" id="single-job-count">0 chars</span>
+            </label>
+            <div class="textarea-wrap">
+                <textarea id="single-job" class="form-textarea" placeholder="Paste target job description to run explainable matching, skill gap discovery, and interview risk detection…"></textarea>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="single-skills" class="form-label">
+                <span class="form-label-left"><i class="fas fa-tags"></i> Core Required Skills</span>
+                <span class="badge-optional">Comma-separated</span>
+            </label>
+            <input type="text" id="single-skills" class="form-input" placeholder="e.g. Python, Machine Learning, SQL, AWS, Docker">
+        </div>
+
+        <button class="btn-action" id="single-run-btn" onclick="runSingleAnalysis()">
+            <i class="fas fa-bolt"></i> Run Full Intelligence Analysis
+        </button>
+
+        <div id="single-results" style="display:none; margin-top:28px;"></div>
+    </section>
+
+    <!-- =====================================================================
+         PANEL 2: BATCH RANKING
+         ===================================================================== -->
+    <section id="batch-panel" class="tab-panel" role="tabpanel" aria-labelledby="tab-batch">
+        <div class="panel-intro-card">
+            <div>
+                <div class="panel-intro-title"><i class="fas fa-layer-group" style="color:var(--c-indigo);"></i> High-Volume Batch Candidate Ranking</div>
+                <div class="panel-intro-desc">Upload multiple candidate resumes at once to score and rank against a shared job description with instant CSV export and live filtering.</div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">
+                <span class="form-label-left"><i class="fas fa-folder-open"></i> Upload Candidate Resumes</span>
+                <span class="badge-optional">Select multiple files</span>
+            </label>
+            <div class="dropzone" id="batch-dz">
+                <span class="dropzone-icon"><i class="fas fa-files-medical"></i></span>
+                <div class="dropzone-title">Drag &amp; drop multiple resumes here</div>
+                <div class="dropzone-sub">PDF, DOCX, DOC, TXT supported</div>
+                <input type="file" id="batch-files" style="display:none;" accept=".pdf,.docx,.doc,.txt" multiple>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="batch-job" class="form-label">
+                <span class="form-label-left"><i class="fas fa-briefcase"></i> Benchmark Job Description</span>
+                <span class="char-counter" id="batch-job-count">0 chars</span>
+            </label>
+            <textarea id="batch-job" class="form-textarea" placeholder="Paste job description to rank all uploaded candidate resumes against…"></textarea>
+        </div>
+
+        <button class="btn-action" onclick="runBatchAnalysis()">
+            <i class="fas fa-layer-group"></i> Rank Candidate Cohort
+        </button>
+
+        <div id="batch-results" style="display:none; margin-top:28px;"></div>
+    </section>
+
+    <!-- =====================================================================
+         PANEL: GITHUB LIVE CODE EVIDENCE VERIFIER
+         ===================================================================== -->
+    <section id="github-panel" class="tab-panel" role="tabpanel">
+        <div class="panel-intro-card">
+            <div>
+                <div class="panel-intro-title"><i class="fab fa-github" style="color:var(--c-cyan);"></i> GitHub Live Code Evidence Verifier</div>
+                <div class="panel-intro-desc">Combat resume inflation by cross-referencing claimed skills against public repositories, star counts, programming languages, and real commit artifacts.</div>
+            </div>
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                <button class="btn-subtle" onclick="loadGitHubDemo('alexchen-dev')"><i class="fas fa-wand-magic-sparkles"></i> Load Alex Chen (Sample Profile)</button>
+                <button class="btn-subtle" onclick="loadGitHubDemo('torvalds')"><i class="fab fa-github"></i> Load Torvalds (Linux)</button>
+            </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:18px; margin-bottom:18px;">
+            <div class="form-group">
+                <label for="github-username-input" class="form-label">
+                    <span class="form-label-left"><i class="fab fa-github"></i> Candidate GitHub Username or URL</span>
+                    <span class="badge-optional">Public Profile</span>
+                </label>
+                <div style="display:flex; gap:10px;">
+                    <input type="text" id="github-username-input" class="form-input" placeholder="e.g. alexchen-dev or https://github.com/alexchen-dev">
+                </div>
+                <div style="font-size:0.78rem; color:var(--text-3); margin-top:6px; display:flex; align-items:center; gap:6px;">
+                    <i class="fas fa-shield-halved" style="color:var(--c-emerald);"></i> 100% Free &amp; Offline Ready · No authentication or tokens required
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="github-resume-input" class="form-label">
+                    <span class="form-label-left"><i class="fas fa-id-card"></i> Candidate Resume Content for Cross-Referencing</span>
+                    <span class="badge-optional" id="github-resume-sync-badge">Auto-synced from Workspace</span>
+                </label>
+                <textarea id="github-resume-input" class="form-textarea" style="min-height:90px;" placeholder="Paste resume text, or use workspace resume to cross-reference claimed technical skills…"></textarea>
+            </div>
+        </div>
+
+        <div style="text-align:center; margin-bottom:24px;">
+            <button class="btn-action" style="max-width:320px; margin:0 auto;" id="github-verify-btn" onclick="runGitHubVerification()">
+                <i class="fab fa-github"></i> Verify Live Code Evidence
+            </button>
+        </div>
+
+        <!-- Verification Results Container -->
+        <div id="github-results-container" style="display:none;">
+            <!-- Profile Hero & Score Summary -->
+            <div class="github-hero-card" id="github-hero-card">
+                <!-- Dynamically populated -->
+            </div>
+
+            <!-- Evidence Breakdown Matrix (Verified vs Self-Reported vs Discovered) -->
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); gap:18px; margin-bottom:20px;">
+                <!-- Code-Verified Skills -->
+                <div class="result-block" style="border-color: rgba(16, 185, 129, 0.4);">
+                    <div class="metric-header">
+                        <span class="metric-title"><i class="fas fa-check-double" style="color:var(--c-emerald);"></i> Code-Verified Skills</span>
+                        <span class="metric-badge" id="github-verified-count-badge" style="background:rgba(16,185,129,0.15); color:#34d399; border:1px solid rgba(16,185,129,0.3);">0 Verified</span>
+                    </div>
+                    <p style="font-size:0.8rem; color:var(--text-3); margin-bottom:12px;">Resume claims confirmed by public code repositories and language artifacts.</p>
+                    <div class="github-skill-list" id="github-verified-skills-list"></div>
+                </div>
+
+                <!-- Self-Reported Only -->
+                <div class="result-block" style="border-color: rgba(245, 158, 11, 0.35);">
+                    <div class="metric-header">
+                        <span class="metric-title"><i class="fas fa-circle-question" style="color:var(--c-amber);"></i> Self-Reported (Unverified)</span>
+                        <span class="metric-badge" id="github-self-reported-badge" style="background:rgba(245,158,11,0.15); color:#fbbf24; border:1px solid rgba(245,158,11,0.3);">0 Items</span>
+                    </div>
+                    <p style="font-size:0.8rem; color:var(--text-3); margin-bottom:12px;">Listed on resume but lacking public GitHub proof (common for enterprise or private work).</p>
+                    <div class="github-skill-list" id="github-self-reported-list"></div>
+                </div>
+
+                <!-- Discovered Hidden Strengths -->
+                <div class="result-block" style="border-color: rgba(0, 242, 254, 0.35);">
+                    <div class="metric-header">
+                        <span class="metric-title"><i class="fas fa-gem" style="color:var(--c-cyan);"></i> Discovered Hidden Strengths</span>
+                        <span class="metric-badge" id="github-hidden-badge" style="background:rgba(0,242,254,0.15); color:var(--c-cyan); border:1px solid rgba(0,242,254,0.3);">Bonus Strengths</span>
+                    </div>
+                    <p style="font-size:0.8rem; color:var(--text-3); margin-bottom:12px;">Active technologies detected on GitHub that were omitted from the candidate resume.</p>
+                    <div class="github-skill-list" id="github-hidden-skills-list"></div>
+                </div>
+            </div>
+
+            <!-- Language Distribution & Recruiter Note -->
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); gap:18px; margin-bottom:20px;">
+                <!-- Language Distribution -->
+                <div class="result-block">
+                    <div class="metric-header">
+                        <span class="metric-title"><i class="fas fa-chart-pie" style="color:var(--c-indigo);"></i> Programming Language Footprint</span>
+                    </div>
+                    <div id="github-lang-bars" style="margin-top:14px; display:flex; flex-direction:column; gap:10px;"></div>
+                </div>
+
+                <!-- Recruiter Evidence Assessment -->
+                <div class="result-block">
+                    <div class="metric-header">
+                        <span class="metric-title"><i class="fas fa-clipboard-check" style="color:var(--c-emerald);"></i> Recruiter Proof Evaluation</span>
+                    </div>
+                    <div id="github-recruiter-note" style="margin-top:14px; font-size:0.92rem; line-height:1.6; color:var(--text-1);"></div>
+                </div>
+            </div>
+
+            <!-- Top Highlighted Public Repositories -->
+            <div class="result-block">
+                <div class="metric-header">
+                    <span class="metric-title"><i class="fas fa-folder-open" style="color:var(--c-blue);"></i> Highlighted Code Repositories</span>
+                    <span class="metric-badge" id="github-repo-count-badge">Top Projects</span>
+                </div>
+                <div class="github-repos-grid" id="github-repos-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:14px; margin-top:14px;"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- =====================================================================
+         PANEL 3: RECRUITER LENS
+         ===================================================================== -->
+    <section id="recruiter-panel" class="tab-panel" role="tabpanel">
+        <div class="panel-intro-card">
+            <div>
+                <div class="panel-intro-title"><i class="fas fa-user-astronaut" style="color:var(--c-amber);"></i> 3-Perspective Recruiter Simulation</div>
+                <div class="panel-intro-desc">Simulate feedback from a Startup Founder (urgency &amp; versatility), Enterprise Talent Lead (process &amp; stability), and Principal Tech Interviewer (architecture &amp; depth).</div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="recruiter-resume" class="form-label">
+                <span class="form-label-left"><i class="fas fa-user-gear"></i> Candidate Resume Content</span>
+                <span class="char-counter" id="recruiter-resume-count">0 chars</span>
+            </label>
+            <textarea id="recruiter-resume" class="form-textarea" style="min-height:140px;" placeholder="Paste raw resume text here…"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="recruiter-job" class="form-label">
+                <span class="form-label-left"><i class="fas fa-briefcase"></i> Target Job Description</span>
+                <span class="char-counter" id="recruiter-job-count">0 chars</span>
+            </label>
+            <textarea id="recruiter-job" class="form-textarea" placeholder="Paste target job description…"></textarea>
+        </div>
+
+        <button class="btn-action" onclick="runRecruiterSim()">
+            <i class="fas fa-user-astronaut"></i> Simulate 3 Recruiter Lenses
+        </button>
+
+        <div id="recruiter-results" style="display:none; margin-top:24px;"></div>
+    </section>
+
+    <!-- =====================================================================
+         PANEL 4: FAIRNESS AUDIT
+         ===================================================================== -->
+    <section id="fairness-panel" class="tab-panel" role="tabpanel">
+        <div class="panel-intro-card">
+            <div>
+                <div class="panel-intro-title"><i class="fas fa-scale-balanced" style="color:var(--c-green);"></i> Demographic Disparity Screening Audit</div>
+                <div class="panel-intro-desc">Empirical screening fairness verification. Tests whether qualification scoring remains strictly identical when job-irrelevant demographic signals (names, pronouns) vary.</div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="fairness-text" class="form-label">
+                <span class="form-label-left"><i class="fas fa-shield-halved"></i> Resume Content for Audit</span>
+                <span class="char-counter" id="fairness-text-count">0 chars</span>
+            </label>
+            <textarea id="fairness-text" class="form-textarea" placeholder="Paste resume text to audit fairness consistency…"></textarea>
+        </div>
+
+        <button class="btn-action" onclick="runFairnessAudit()">
+            <i class="fas fa-shield-halved"></i> Run Controlled Demographic Audit
+        </button>
+
+        <div id="fairness-results" style="display:none; margin-top:20px;"></div>
+    </section>
+
+    <!-- =====================================================================
+         PANEL 5: CAREER PATHS
+         ===================================================================== -->
+    <section id="career-panel" class="tab-panel" role="tabpanel">
+        <div class="panel-intro-card">
+            <div>
+                <div class="panel-intro-title"><i class="fas fa-route" style="color:var(--c-cyan);"></i> AI Career Trajectory Recommender</div>
+                <div class="panel-intro-desc">Discovers 3 high-impact career progression vectors based on your experience baseline, including growth outlook, salary ranges, and concrete execution steps.</div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label"><i class="fas fa-cloud-arrow-up"></i> Upload Resume File</label>
+            <div class="dropzone" id="career-dz">
+                <span class="dropzone-icon" style="color:var(--c-cyan);"><i class="fas fa-route"></i></span>
+                <div class="dropzone-title">Upload resume to calculate career trajectories</div>
+                <div class="dropzone-sub">PDF, DOCX, DOC, TXT supported</div>
+                <input type="file" id="career-file" style="display:none;" accept=".pdf,.docx,.doc,.txt">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="career-job" class="form-label">
+                <span class="form-label-left"><i class="fas fa-bullseye"></i> Target Aspiration or Role Focus</span>
+                <span class="char-counter" id="career-job-count">0 chars</span>
+            </label>
+            <textarea id="career-job" class="form-textarea" placeholder="Describe the type of role or company you aspire to grow toward…"></textarea>
+        </div>
+
+        <button class="btn-action" onclick="runCareerPaths()" style="background: linear-gradient(120deg, var(--c-cyan), var(--c-indigo));">
+            <i class="fas fa-route"></i> Generate Career Trajectories
+        </button>
+
+        <div id="career-results" style="display:none; margin-top:24px;"></div>
+    </section>
+
+    <!-- =====================================================================
+         PANEL 6: SALARY ESTIMATOR
+         ===================================================================== -->
+    <section id="salary-panel" class="tab-panel" role="tabpanel">
+        <div class="panel-intro-card">
+            <div>
+                <div class="panel-intro-title"><i class="fas fa-coins" style="color:var(--c-green);"></i> AI Market Salary Benchmarking</div>
+                <div class="panel-intro-desc">Evaluates your resume against current compensation percentiles for the target role, giving you median ranges, market positioning, and negotiation leverage.</div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label"><i class="fas fa-cloud-arrow-up"></i> Upload Resume File</label>
+            <div class="dropzone" id="salary-dz">
+                <span class="dropzone-icon" style="color:var(--c-green);"><i class="fas fa-coins"></i></span>
+                <div class="dropzone-title">Upload resume for compensation benchmarking</div>
+                <div class="dropzone-sub">PDF, DOCX, DOC, TXT supported</div>
+                <input type="file" id="salary-file" style="display:none;" accept=".pdf,.docx,.doc,.txt">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="salary-job" class="form-label">
+                <span class="form-label-left"><i class="fas fa-briefcase"></i> Benchmark Job Description</span>
+                <span class="char-counter" id="salary-job-count">0 chars</span>
+            </label>
+            <textarea id="salary-job" class="form-textarea" placeholder="Paste full job description with requirements…"></textarea>
+        </div>
+
+        <button class="btn-action" onclick="runSalaryEstimate()" style="background: linear-gradient(120deg, var(--c-green), var(--c-teal));">
+            <i class="fas fa-coins"></i> Estimate Market Compensation
+        </button>
+
+        <div id="salary-results" style="display:none; margin-top:24px;"></div>
+    </section>
+
+    <!-- =====================================================================
+         PANEL 7: LEARNING ROADMAP
+         ===================================================================== -->
+    <section id="roadmap-panel" class="tab-panel" role="tabpanel">
+        <div class="panel-intro-card">
+            <div>
+                <div class="panel-intro-title"><i class="fas fa-map-location-dot" style="color:var(--c-blue);"></i> 4-Week Targeted Upskilling Roadmap</div>
+                <div class="panel-intro-desc">Turn identified qualification gaps into a structured 4-week checklist with actionable milestones and technical topics.</div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="roadmap-skills" class="form-label">
+                <span class="form-label-left"><i class="fas fa-graduation-cap"></i> Target Gap Skills</span>
+                <span class="badge-optional">Comma-separated</span>
+            </label>
+            <input type="text" id="roadmap-skills" class="form-input" placeholder="e.g. Docker, Kubernetes, AWS, GraphQL" value="Docker, Kubernetes, AWS">
+        </div>
+
+        <button class="btn-action" onclick="generateRoadmap()">
+            <i class="fas fa-map-location-dot"></i> Generate 4-Week Roadmap
+        </button>
+
+        <div id="roadmap-results" style="display:none; margin-top:24px;"></div>
+    </section>
+
+    <!-- =====================================================================
+         PANEL 8: VERSION DIFF
+         ===================================================================== -->
+    <section id="version-panel" class="tab-panel" role="tabpanel">
+        <div class="panel-intro-card">
+            <div>
+                <div class="panel-intro-title"><i class="fas fa-code-compare" style="color:var(--c-violet);"></i> Version Delta &amp; Impact Analysis</div>
+                <div class="panel-intro-desc">Compare two iterations of a resume (before vs. after revision) to quantify added competencies, removed clutter, and overall qualification trajectory.</div>
+            </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:16px; margin-bottom:20px;">
+            <div class="form-group">
+                <label for="v1-text" class="form-label"><i class="fas fa-clock-rotate-left"></i> Version 1 (Base)</label>
+                <textarea id="v1-text" class="form-textarea" placeholder="Paste Version 1 resume text…"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="v2-text" class="form-label"><i class="fas fa-sparkles"></i> Version 2 (Revised)</label>
+                <textarea id="v2-text" class="form-textarea" placeholder="Paste Version 2 resume text…"></textarea>
+            </div>
+        </div>
+
+        <button class="btn-action" onclick="runVersionCompare()">
+            <i class="fas fa-code-branch"></i> Analyze Version Impact
+        </button>
+
+        <div id="version-results" style="display:none; margin-top:20px;"></div>
+    </section>
+
+    <!-- =====================================================================
+         PANEL 9: AI ENHANCER
+         ===================================================================== -->
+    <section id="improve-panel" class="tab-panel" role="tabpanel">
+        <div class="panel-intro-card">
+            <div>
+                <div class="panel-intro-title"><i class="fas fa-file-circle-check" style="color:var(--c-emerald);"></i> ATS Error Audit &amp; Resume Rebuilder Engine</div>
+                <div class="panel-intro-desc">Upload your resume to automatically audit formatting errors, passive phrasing, and missing metrics—then reconstruct a complete, 100% ATS-friendly resume ready for submission.</div>
+            </div>
+            <button class="btn-subtle" onclick="loadSampleIntoRebuilder()"><i class="fas fa-file-code"></i> Load Sample Resume</button>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label"><i class="fas fa-cloud-arrow-up"></i> Upload Resume File</label>
+            <div class="dropzone" id="improve-dz">
+                <span class="dropzone-icon" style="color:var(--c-emerald);"><i class="fas fa-file-shield"></i></span>
+                <div class="dropzone-title">Upload resume to audit errors &amp; rebuild an ATS-friendly resume</div>
+                <input type="file" id="improve-file" style="display:none;" accept=".pdf,.docx,.doc,.txt">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="improve-job" class="form-label">
+                <span class="form-label-left"><i class="fas fa-bullseye"></i> Target Job Description (Optional for Keyword Alignment)</span>
+                <span class="char-counter" id="improve-job-count">0 chars</span>
+            </label>
+            <textarea id="improve-job" class="form-textarea" placeholder="Paste target job description to tailor the rebuilt ATS resume against specific required skills…"></textarea>
+        </div>
+
+        <div class="btn-secondary-row" style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:20px;">
+            <button class="btn-action" id="rebuild-ats-resume-btn" style="flex:1.2; background:linear-gradient(135deg, #10b981 0%, #00f2fe 100%); color:#030712; font-weight:800;" onclick="runAtsResumeRebuild()">
+                <i class="fas fa-file-circle-check"></i> Audit Errors &amp; Rebuild ATS Resume
+            </button>
+            <button class="btn-action" style="flex:1;" onclick="runImprovement()">
+                <i class="fas fa-lightbulb"></i> Strategy Insights
+            </button>
+            <button class="btn-action" id="rewrite-bullets-btn" style="flex:1; background:linear-gradient(120deg, var(--c-purple), var(--c-indigo));" onclick="rewriteResumeBullets()">
+                <i class="fas fa-wand-magic-sparkles"></i> Rewrite Bullets Only
+            </button>
+        </div>
+
+        <div id="rebuild-resume-results" style="display:none; margin-top:24px;"></div>
+        <div id="improve-results" style="display:none; margin-top:24px;"></div>
+        <div id="rewrite-results" style="display:none; margin-top:24px;"></div>
+    </section>
+
+    <!-- =====================================================================
+         PANEL 10: COVER LETTER
+         ===================================================================== -->
+    <section id="cover-letter-panel" class="tab-panel" role="tabpanel">
+        <div class="panel-intro-card">
+            <div>
+                <div class="panel-intro-title"><i class="fas fa-envelope-open-text" style="color:var(--c-blue);"></i> Job-Tailored Cover Letter Generator</div>
+                <div class="panel-intro-desc">Synthesizes candidate background with the employer's mission into a compelling, professional cover letter.</div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label"><i class="fas fa-file-signature"></i> Upload Candidate Resume</label>
+            <div class="dropzone" id="cover-dz">
+                <span class="dropzone-icon"><i class="fas fa-envelope-open-text"></i></span>
+                <div class="dropzone-title">Upload resume to draft a cover letter</div>
+                <input type="file" id="cover-file" style="display:none;" accept=".pdf,.docx,.doc,.txt">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="cover-job" class="form-label">
+                <span class="form-label-left"><i class="fas fa-briefcase"></i> Target Job Description</span>
+                <span class="char-counter" id="cover-job-count">0 chars</span>
+            </label>
+            <textarea id="cover-job" class="form-textarea" placeholder="Paste target job description…"></textarea>
+        </div>
+
+        <button class="btn-action" onclick="generateCoverLetter()">
+            <i class="fas fa-pen-nib"></i> Generate Tailored Cover Letter
+        </button>
+
+        <div id="cover-results" style="display:none; margin-top:24px;"></div>
+    </section>
+
+    <!-- =====================================================================
+         PANEL 11: ATS SIMULATOR
+         ===================================================================== -->
+    <section id="ats-panel" class="tab-panel" role="tabpanel">
+        <div class="panel-intro-card">
+            <div>
+                <div class="panel-intro-title"><i class="fas fa-eye" style="color:var(--c-amber);"></i> True ATS Raw Text Scanner</div>
+                <div class="panel-intro-desc">Inspect exactly what primitive Applicant Tracking Systems extract from your layout. Detect encoding issues, scrambled tables, or omitted text blocks.</div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label"><i class="fas fa-file-code"></i> Upload Resume File</label>
+            <div class="dropzone" id="ats-dz">
+                <span class="dropzone-icon" style="color:var(--c-amber);"><i class="fas fa-file-code"></i></span>
+                <div class="dropzone-title">Upload resume to test ATS text extractability</div>
+                <input type="file" id="ats-file" style="display:none;" accept=".pdf,.docx,.doc,.txt">
+            </div>
+        </div>
+
+        <button class="btn-action" onclick="runATS()" style="background: linear-gradient(120deg, var(--c-amber), var(--c-orange));">
+            <i class="fas fa-microchip"></i> Simulate ATS Extraction
+        </button>
+
+        <div id="ats-results" style="display:none; margin-top:20px;"></div>
+    </section>
+
+    <!-- =====================================================================
+         PANEL 12: MOCK INTERVIEW
+         ===================================================================== -->
+    <section id="interview-panel" class="tab-panel" role="tabpanel">
+        <div class="panel-intro-card">
+            <div>
+                <div class="panel-intro-title"><i class="fas fa-microphone" style="color:var(--c-indigo);"></i> AI Conversational Mock Interviewer</div>
+                <div class="panel-intro-desc">Practice technical and behavioral interview rounds with an adaptive AI Recruiter grounded in your exact resume claims and job criteria.</div>
+            </div>
+            <div style="display:flex; gap:10px;">
+                <button class="btn-subtle" onclick="startMockInterview()"><i class="fas fa-play"></i> Start Interview</button>
+                <button class="btn-subtle" onclick="clearInterview()"><i class="fas fa-rotate"></i> Reset</button>
+            </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:16px; margin-bottom:18px;">
+            <div class="form-group">
+                <label for="mock-resume" class="form-label"><i class="fas fa-id-card"></i> Candidate Resume Content</label>
+                <textarea id="mock-resume" class="form-textarea" style="min-height:90px;" placeholder="Paste resume text or use sample…"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="mock-job" class="form-label"><i class="fas fa-briefcase"></i> Target Job Description</label>
+                <textarea id="mock-job" class="form-textarea" style="min-height:90px;" placeholder="Paste target job description…"></textarea>
+            </div>
+        </div>
+
+        <div class="result-block" style="border-color: rgba(99, 102, 241, 0.35);">
+            <div class="chat-wrap" id="chat-box" role="log" aria-live="polite">
+                <div style="color:var(--text-3); text-align:center; font-size:0.9rem; margin: auto 0;">
+                    Click "Start Interview" when you are ready to begin the practice session.
+                </div>
+            </div>
+            <div style="display:flex; gap:10px;">
+                <input type="text" id="mock-input" class="form-input" style="flex:1;" placeholder="Type your answer and press Enter…">
+                <button class="btn-action" style="width:auto; padding:0 24px; margin-top:0;" onclick="sendInterviewMessage()" aria-label="Send message">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </section>
+
+</div><!-- /.glass-panel -->
+</div><!-- /.app-wrapper -->
+
+<!-- History Modal Backdrop -->
+<div class="history-modal-backdrop" id="history-modal-backdrop" onclick="closeHistoryModalOnBackdrop(event)">
+    <div class="history-modal">
+        <div class="history-modal-header">
+            <div class="history-modal-title"><i class="fas fa-clock-rotate-left" style="color:var(--c-cyan);"></i> Candidate Analysis History</div>
+            <button class="icon-btn" onclick="closeHistoryModal()" aria-label="Close History Modal" style="width:32px; height:32px;"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="history-modal-body" id="history-items-container">
+            <div style="text-align:center; color:var(--text-3); padding:30px 0;">No saved candidate scans found. Run an analysis to archive results.</div>
+        </div>
+        <div class="history-modal-footer">
+            <span style="font-size:0.8rem; color:var(--text-3);" id="history-total-label">0 scans stored locally</span>
+            <button class="btn-subtle" onclick="clearAnalysisHistory()"><i class="fas fa-trash-can"></i> Clear History</button>
+        </div>
+    </div>
+</div>
+
+<!-- =====================================================================
+     AUTH WELCOME MODAL BACKDROP (Triggered on Login / Signup)
+     ===================================================================== -->
+<div class="auth-welcome-modal-backdrop" id="auth-welcome-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="auth-welcome-title" onclick="if(event.target===this)closeAuthWelcomeModal()">
+    <div class="auth-welcome-modal">
+        <div class="auth-welcome-glow"></div>
+        <button class="auth-welcome-close" onclick="closeAuthWelcomeModal()" title="Close notification" aria-label="Close notification">
+            <i class="fas fa-times"></i>
+        </button>
+        <div class="auth-welcome-icon-wrap" id="auth-welcome-icon">
+            <i class="fas fa-sparkles"></i>
+        </div>
+        <div class="auth-welcome-badge" id="auth-welcome-badge">
+            <i class="fas fa-check-circle"></i> Authenticated
+        </div>
+        <h2 class="auth-welcome-title" id="auth-welcome-title">
+            Welcome back, <span class="user-highlight" id="auth-welcome-username">User</span>!
+        </h2>
+        <p class="auth-welcome-sub" id="auth-welcome-sub">
+            Your intelligence workspace is ready. Analyze candidate-job fit, verify resume claims, simulate recruiter audits, or consult the offline AI assistant.
+        </p>
+        <div class="auth-welcome-features">
+            <span class="auth-welcome-feature-tag"><i class="fas fa-bolt"></i> 12 Analysis Modules</span>
+            <span class="auth-welcome-feature-tag"><i class="fas fa-robot"></i> Offline AI Assistant</span>
+            <span class="auth-welcome-feature-tag"><i class="fas fa-shield-halved"></i> 100% Private</span>
+        </div>
+        <button class="auth-welcome-cta" onclick="closeAuthWelcomeModal()">
+            <span>Explore ResumeAI Intelligence</span>
+            <i class="fas fa-arrow-right"></i>
+        </button>
+    </div>
+</div>
+
+<!-- =====================================================================
+     FLOATING AI ASSISTANT WIDGET (100% Local Mode Ready)
+     ===================================================================== -->
+<div class="assistant-launcher-wrap" id="assistant-launcher-wrap">
+    <div class="assistant-launcher-tooltip">
+        <span class="pulse-dot"></span>
+        <span>AI Copilot (Local Ready)</span>
+    </div>
+    <button class="assistant-launcher-btn" id="assistant-launcher-btn" onclick="toggleAssistantWidget()" title="Open AI Assistant" aria-label="Open AI Assistant">
+        <i class="fas fa-robot"></i>
+        <span class="assistant-status-dot" id="assistant-status-dot"></span>
+    </button>
+</div>
+
+<div class="assistant-chat-panel" id="assistant-chat-panel" role="complementary" aria-label="AI Copilot Assistant">
+    <div class="assistant-panel-header">
+        <div class="assistant-header-info">
+            <div class="assistant-header-icon"><i class="fas fa-brain"></i></div>
+            <div class="assistant-header-text">
+                <h3>ResumeAI Copilot</h3>
+                <span class="assistant-header-badge" id="assistant-header-badge">
+                    <span class="dot"></span> Local Mode (Offline Ready)
+                </span>
+            </div>
+        </div>
+        <div class="assistant-header-actions">
+            <button class="assistant-header-btn" onclick="clearAssistantChat()" title="Reset chat" aria-label="Reset chat">
+                <i class="fas fa-rotate"></i>
+            </button>
+            <button class="assistant-header-btn" onclick="toggleAssistantWidget()" title="Close assistant" aria-label="Close assistant">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Quick Prompts Horizontal Scroll -->
+    <div class="assistant-quick-prompts">
+        <button class="assistant-chip" onclick="askQuickPrompt('How does the ATS Resume Rebuilder audit errors and generate a new resume?')">📄 ATS Rebuilder</button>
+        <button class="assistant-chip" onclick="askQuickPrompt('Explain how the GitHub Live Code Evidence Verifier works')">🐙 GitHub Verifier</button>
+        <button class="assistant-chip" onclick="askQuickPrompt('Give me a 5-point ATS formatting checklist')">🎯 ATS Checklist</button>
+        <button class="assistant-chip" onclick="askQuickPrompt('Explain Google X-Y-Z bullet formula with examples')">✍️ X-Y-Z Formula</button>
+        <button class="assistant-chip" onclick="askQuickPrompt('How should I negotiate salary after an offer?')">💰 Salary Negotiation</button>
+        <button class="assistant-chip" onclick="askQuickPrompt('Explain the scoring rubric and TF-IDF matching')">📊 Scoring Rubric</button>
+        <button class="assistant-chip" onclick="askQuickPrompt('Explain STAR method for behavioral interviews')">⭐ STAR Method</button>
+        <button class="assistant-chip" onclick="askQuickPrompt('How can I explain a career employment gap on my resume?')">⏳ Career Gaps</button>
+    </div>
+
+    <div class="assistant-panel-body" id="assistant-messages" role="log" aria-live="polite">
+        <div class="assistant-msg bot">
+            <div class="bot-mode-tag"><i class="fas fa-microchip"></i> Local Copilot</div>
+            <div>
+                👋 <strong>Hello! I'm your ResumeAI Copilot.</strong><br>
+                I operate <strong>100% in offline Local Mode</strong> with full domain intelligence, or via OpenAI GPT when enabled.<br><br>
+                Ask me about ATS formatting, quantifiable bullet formulas, salary negotiation, or candidate scoring!
+            </div>
+        </div>
+    </div>
+
+    <div class="assistant-panel-footer">
+        <div class="assistant-input-row">
+            <input type="text" id="assistant-input" class="assistant-input" placeholder="Ask ResumeAI Copilot…" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendAssistantMessage();}">
+            <button class="assistant-send-btn" id="assistant-send-btn" onclick="sendAssistantMessage()" aria-label="Send message">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+        <div class="assistant-footer-meta">
+            <span><i class="fas fa-shield-halved"></i> 100% Private &amp; Offline Ready</span>
+            <span id="assistant-mode-indicator">Mode: Local Engine</span>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
