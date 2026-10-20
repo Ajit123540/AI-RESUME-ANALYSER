@@ -282,6 +282,14 @@
         .form-input:focus + i, .input-row:focus-within i { color: var(--color-cyan); }
         .form-input::placeholder { color: var(--text-muted); }
 
+        .toggle-password-btn {
+            position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+            background: none; border: none; color: var(--text-muted); cursor: pointer;
+            font-size: 0.95rem; padding: 6px; display: flex; align-items: center; justify-content: center;
+            transition: color 0.2s ease;
+        }
+        .toggle-password-btn:hover { color: var(--color-cyan); }
+
         .btn-action {
             width: 100%; border: none; cursor: pointer; border-radius: 14px; height: 54px;
             color: white; font-weight: 800; font-size: 1rem; letter-spacing: 0.01em;
@@ -433,7 +441,10 @@
 
                     <div class="input-row">
                         <i class="fas fa-lock"></i>
-                        <input type="password" id="signup-password" class="form-input" placeholder="Password" required>
+                        <input type="password" id="signup-password" class="form-input" placeholder="Password" required style="padding-right: 46px;">
+                        <button type="button" class="toggle-password-btn" id="toggle-password" aria-label="Toggle password visibility">
+                            <i class="fas fa-eye" id="toggle-password-icon"></i>
+                        </button>
                     </div>
 
                     <button type="submit" class="btn-action"><i class="fas fa-rocket"></i> Get Started Free</button>
@@ -499,6 +510,18 @@
             btn.appendChild(ripple);
             setTimeout(() => ripple.remove(), 600);
         });
+
+        // Password Visibility Toggle
+        const togglePasswordBtn = document.getElementById('toggle-password');
+        const passwordInput = document.getElementById('signup-password');
+        const togglePasswordIcon = document.getElementById('toggle-password-icon');
+        if (togglePasswordBtn && passwordInput && togglePasswordIcon) {
+            togglePasswordBtn.addEventListener('click', () => {
+                const isPass = passwordInput.type === 'password';
+                passwordInput.type = isPass ? 'text' : 'password';
+                togglePasswordIcon.className = isPass ? 'fas fa-eye-slash' : 'fas fa-eye';
+            });
+        }
 
         // Signup Form Submission & New User Welcome Event Trigger
         const signupForm = document.getElementById('signup-form');

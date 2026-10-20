@@ -106,6 +106,159 @@
             </button>
             <a href="/login" class="btn-ghost"><i class="fas fa-user-lock"></i> Recruiter Portal</a>
         </div>
+
+        <!-- =====================================================================
+             HERO INTERACTIVE SHOWCASE COCKPIT (Real-Time Intelligence Preview)
+             ===================================================================== -->
+        <div class="hero-showcase-cockpit spotlight-card" id="hero-showcase">
+            <div class="showcase-scan-laser"></div>
+            <div class="showcase-window-bar">
+                <div class="showcase-window-dots">
+                    <span class="dot red"></span>
+                    <span class="dot yellow"></span>
+                    <span class="dot green"></span>
+                </div>
+                <div class="showcase-window-title">
+                    <i class="fas fa-microchip"></i> Telemetry Engine · Real-Time Intelligence Preview
+                </div>
+                <div class="showcase-window-meta">
+                    <span class="live-pulse"></span> Sub-Second Evaluation
+                </div>
+            </div>
+
+            <!-- Showcase Interactive Switcher Tabs -->
+            <div class="showcase-tabs-nav" role="tablist" aria-label="Hero Showcase Views">
+                <button class="showcase-tab-btn active" id="showcase-btn-match" onclick="switchHeroShowcase('match')">
+                    <i class="fas fa-chart-pie"></i> Match Matrix (94%)
+                </button>
+                <button class="showcase-tab-btn" id="showcase-btn-ats" onclick="switchHeroShowcase('ats')">
+                    <i class="fas fa-file-circle-check"></i> ATS Rebuilder (42% → 98%)
+                </button>
+                <button class="showcase-tab-btn" id="showcase-btn-github" onclick="switchHeroShowcase('github')">
+                    <i class="fab fa-github"></i> GitHub Code Proof (9 Verified)
+                </button>
+            </div>
+
+            <!-- Showcase Interactive Content Views -->
+            <div class="showcase-content">
+                <!-- VIEW 1: MATCH MATRIX -->
+                <div class="showcase-view active" id="showcase-view-match">
+                    <div class="showcase-candidate-header">
+                        <div class="showcase-avatar">AC</div>
+                        <div class="showcase-candidate-info">
+                            <div class="showcase-candidate-name">
+                                Alex Chen <span class="showcase-verified-badge"><i class="fas fa-shield-check"></i> Code Verified</span>
+                            </div>
+                            <div class="showcase-candidate-role">Senior Full-Stack &amp; Cloud Platform Engineer · 6+ Years Exp</div>
+                        </div>
+                        <div class="showcase-fit-score">
+                            <span class="score-num">94%</span>
+                            <span class="score-label">Role Fit</span>
+                        </div>
+                    </div>
+
+                    <div class="showcase-metrics-row">
+                        <div class="showcase-metric-tile">
+                            <div class="tile-label"><i class="fas fa-brain" style="color:var(--c-blue);"></i> Core Match</div>
+                            <div class="tile-bar-wrap"><div class="tile-bar-fill" style="width: 95%;"></div></div>
+                            <div class="tile-val">95% (FastAPI, Python, Go, Microservices)</div>
+                        </div>
+                        <div class="showcase-metric-tile">
+                            <div class="tile-label"><i class="fas fa-bolt" style="color:var(--c-amber);"></i> ATS Compliance</div>
+                            <div class="tile-bar-wrap"><div class="tile-bar-fill" style="width: 98%;"></div></div>
+                            <div class="tile-val">98% (Standard Section Parsing)</div>
+                        </div>
+                        <div class="showcase-metric-tile">
+                            <div class="tile-label"><i class="fas fa-gem" style="color:var(--c-green);"></i> Quantified Impact</div>
+                            <div class="tile-bar-wrap"><div class="tile-bar-fill" style="width: 91%;"></div></div>
+                            <div class="tile-val">91% (Google XYZ Metric Formula)</div>
+                        </div>
+                    </div>
+
+                    <div class="showcase-tags-row">
+                        <span class="showcase-tag matched"><i class="fas fa-check"></i> Python (FastAPI/Django)</span>
+                        <span class="showcase-tag matched"><i class="fas fa-check"></i> AWS (ECS, Lambda, Terraform)</span>
+                        <span class="showcase-tag matched"><i class="fas fa-check"></i> Docker &amp; Kubernetes</span>
+                        <span class="showcase-tag matched"><i class="fas fa-check"></i> PostgreSQL &amp; Redis</span>
+                        <span class="showcase-tag implicit"><i class="fas fa-sparkles"></i> High-Throughput Pipelines</span>
+                    </div>
+
+                    <div class="showcase-actions-row">
+                        <span class="showcase-action-tip"><i class="fas fa-lightbulb"></i> One click loads Alex Chen into all 13 screening and auditing tools.</span>
+                        <button class="btn-primary" style="padding: 8px 18px; font-size: 0.85rem;" onclick="loadDemoProfile('fullstack')">
+                            <i class="fas fa-bolt"></i> Launch in Full Workspace
+                        </button>
+                    </div>
+                </div>
+
+                <!-- VIEW 2: ATS REBUILDER -->
+                <div class="showcase-view" id="showcase-view-ats">
+                    <div class="showcase-ats-split">
+                        <div class="showcase-ats-col before">
+                            <div class="ats-col-header">
+                                <span class="status-pill error"><i class="fas fa-times-circle"></i> Original Resume (42% ATS Pass)</span>
+                            </div>
+                            <div class="ats-col-body">
+                                <div class="ats-diff-line error"><i class="fas fa-triangle-exclamation"></i> Multi-column format scrambled by legacy parser</div>
+                                <div class="ats-diff-line error"><i class="fas fa-triangle-exclamation"></i> 4 experience bullets missing quantifiable results</div>
+                                <div class="ats-diff-line error"><i class="fas fa-triangle-exclamation"></i> Passive verbs used: "responsible for", "helped with"</div>
+                            </div>
+                        </div>
+                        <div class="showcase-ats-arrow"><i class="fas fa-arrow-right"></i></div>
+                        <div class="showcase-ats-col after">
+                            <div class="ats-col-header">
+                                <span class="status-pill success"><i class="fas fa-check-circle"></i> Rebuilt ATS Resume (98% Pass)</span>
+                            </div>
+                            <div class="ats-col-body">
+                                <div class="ats-diff-line success"><i class="fas fa-check"></i> 100% single-column standard with standard headers</div>
+                                <div class="ats-diff-line success"><i class="fas fa-check"></i> Google X-Y-Z formula: "Engineered X achieving Y by Z"</div>
+                                <div class="ats-diff-line success"><i class="fas fa-check"></i> Strong action verbs: "Architected", "Optimized", "Scaled"</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="showcase-actions-row">
+                        <span class="showcase-action-tip"><i class="fas fa-magic"></i> Automatic repair detects 6 error dimensions and reconstructs clean PDF/TXT.</span>
+                        <button class="btn-primary" style="padding: 8px 18px; font-size: 0.85rem;" onclick="document.querySelector('[data-tab=improve]').click(); loadSampleIntoRebuilder();">
+                            <i class="fas fa-wrench"></i> Open ATS Rebuilder
+                        </button>
+                    </div>
+                </div>
+
+                <!-- VIEW 3: GITHUB LIVE PROOF -->
+                <div class="showcase-view" id="showcase-view-github">
+                    <div class="showcase-github-row">
+                        <div class="showcase-github-avatar"><i class="fab fa-github"></i></div>
+                        <div style="flex:1;">
+                            <div style="font-weight:800; font-size:0.98rem; color:var(--text-1); display:flex; align-items:center; gap:8px;">
+                                github.com/alexchen-dev
+                                <span class="showcase-verified-badge" style="background:rgba(0,242,254,0.15); color:var(--c-cyan);"><i class="fas fa-check-double"></i> 9 Skills Verified in Public Code</span>
+                            </div>
+                            <div style="font-size:0.8rem; color:var(--text-3); margin-top:2px;">
+                                28 Public Repositories · 1,420 Stars · 128 Total PRs &amp; Commits Analyzed
+                            </div>
+                        </div>
+                    </div>
+                    <div class="showcase-lang-footprint">
+                        <div class="showcase-lang-bar-container">
+                            <div class="lang-bar-seg" style="width: 48%; background: #00add8;" title="Go: 48%"></div>
+                            <div class="lang-bar-seg" style="width: 34%; background: #3572a5;" title="Python: 34%"></div>
+                            <div class="lang-bar-seg" style="width: 18%; background: #3178c6;" title="TypeScript: 18%"></div>
+                        </div>
+                        <div class="showcase-lang-legend">
+                            <span><span class="legend-dot" style="background:#00add8;"></span> Go (48%)</span>
+                            <span><span class="legend-dot" style="background:#3572a5;"></span> Python (34%)</span>
+                            <span><span class="legend-dot" style="background:#3178c6;"></span> TypeScript (18%)</span>
+                        </div>
+                    </div>
+                    <div class="showcase-actions-row">
+                        <span class="showcase-action-tip"><i class="fas fa-shield-halved"></i> Cross-references self-reported resume skills against real git commit history.</span>
+                        <button class="btn-primary" style="padding: 8px 18px; font-size: 0.85rem;" onclick="document.querySelector('[data-tab=github]').click(); loadGitHubDemo('alexchen-dev');">
+                            <i class="fab fa-github"></i> Run Live GitHub Audit
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
 
     <!-- =====================================================================

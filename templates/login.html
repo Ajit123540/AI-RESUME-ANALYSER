@@ -284,6 +284,14 @@
         .form-input:focus + i, .input-row:focus-within i { color: var(--color-cyan); }
         .form-input::placeholder { color: var(--text-muted); }
 
+        .toggle-password-btn {
+            position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+            background: none; border: none; color: var(--text-muted); cursor: pointer;
+            font-size: 0.95rem; padding: 6px; display: flex; align-items: center; justify-content: center;
+            transition: color 0.2s ease;
+        }
+        .toggle-password-btn:hover { color: var(--color-cyan); }
+
         .row-inline {
             display: flex; align-items: center; justify-content: space-between; margin: 6px 2px 14px;
         }
@@ -452,7 +460,10 @@
 
                     <div class="input-row">
                         <i class="fas fa-lock"></i>
-                        <input type="password" id="login-password" class="form-input" placeholder="Password" required>
+                        <input type="password" id="login-password" class="form-input" placeholder="Password" required style="padding-right: 46px;">
+                        <button type="button" class="toggle-password-btn" id="toggle-password" aria-label="Toggle password visibility">
+                            <i class="fas fa-eye" id="toggle-password-icon"></i>
+                        </button>
                     </div>
 
                     <div class="row-inline">
@@ -545,6 +556,18 @@
             btn.appendChild(ripple);
             setTimeout(() => ripple.remove(), 600);
         });
+
+        // Password Visibility Toggle
+        const togglePasswordBtn = document.getElementById('toggle-password');
+        const passwordInput = document.getElementById('login-password');
+        const togglePasswordIcon = document.getElementById('toggle-password-icon');
+        if (togglePasswordBtn && passwordInput && togglePasswordIcon) {
+            togglePasswordBtn.addEventListener('click', () => {
+                const isPass = passwordInput.type === 'password';
+                passwordInput.type = isPass ? 'text' : 'password';
+                togglePasswordIcon.className = isPass ? 'fas fa-eye-slash' : 'fas fa-eye';
+            });
+        }
 
         // Login Form Submission & Welcome Event Trigger
         const loginForm = document.getElementById('login-form');

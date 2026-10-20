@@ -707,16 +707,68 @@ function setupDropzone(dzId, inputId, cardId, nameId) {
 /* =====================================================================
    SKELETON & BUTTON LOADING STATE
    ===================================================================== */
+/* =====================================================================
+   HERO SHOWCASE COCKPIT INTERACTION
+   ===================================================================== */
+function switchHeroShowcase(tabKey) {
+    const btns = document.querySelectorAll('.showcase-tab-btn');
+    const views = document.querySelectorAll('.showcase-view');
+
+    btns.forEach(b => b.classList.remove('active'));
+    views.forEach(v => v.classList.remove('active'));
+
+    const targetBtn = document.getElementById(`showcase-btn-${tabKey}`);
+    const targetView = document.getElementById(`showcase-view-${tabKey}`);
+
+    if (targetBtn) targetBtn.classList.add('active');
+    if (targetView) targetView.classList.add('active');
+}
+
 function skeletonHTML(lines = 5) {
     return `
-    <div class="result-block" style="border-color: rgba(99,102,241,0.25);">
-        <div style="display:flex; align-items:center; gap:12px; margin-bottom:18px;">
-            <div class="skeleton" style="width:36px; height:36px; border-radius:10px;"></div>
-            <div class="skeleton" style="width:40%; height:20px;"></div>
+    <div class="skeleton-analysis-wrap">
+        <!-- Telemetry Status Banner -->
+        <div class="skeleton-telemetry-banner">
+            <span class="live-pulse"></span>
+            <span>Running Multi-Perspective NLP &amp; Evidence Cross-Referencing…</span>
+            <div class="skeleton-progress-bar"><div class="skeleton-progress-fill"></div></div>
         </div>
-        ${Array.from({ length: lines }, (_, i) => `
-            <div class="skeleton skeleton-block ${['w-80', 'w-60', 'w-80', 'w-40', 'w-60'][i % 5]}"></div>
-        `).join('')}
+
+        <!-- 4 Score Rings Skeleton Cluster -->
+        <div class="result-block" style="border-color: rgba(99,102,241,0.2);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px;">
+                <div class="skeleton" style="width:240px; height:24px; border-radius:8px;"></div>
+                <div class="skeleton" style="width:110px; height:24px; border-radius:12px;"></div>
+            </div>
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap:14px; margin-bottom:16px;">
+                ${[1, 2, 3, 4].map(() => `
+                    <div style="background:var(--bg-input); border:1px solid var(--glass-border); border-radius:var(--r-lg); padding:20px 16px; display:flex; flex-direction:column; align-items:center; gap:10px;">
+                        <div class="skeleton" style="width:68px; height:68px; border-radius:50%;"></div>
+                        <div class="skeleton" style="width:60px; height:12px; border-radius:4px;"></div>
+                        <div class="skeleton" style="width:80px; height:10px; border-radius:4px;"></div>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+
+        <!-- Content Grid Skeleton -->
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:16px;">
+            <div class="result-block" style="border-color: rgba(99,102,241,0.2);">
+                <div class="skeleton" style="width:180px; height:20px; border-radius:6px; margin-bottom:16px;"></div>
+                <div style="display:flex; flex-wrap:wrap; gap:8px;">
+                    ${[70, 90, 60, 110, 80, 100, 75, 85].map(w => `
+                        <div class="skeleton" style="width:${w}px; height:26px; border-radius:14px;"></div>
+                    `).join('')}
+                </div>
+            </div>
+            <div class="result-block" style="border-color: rgba(99,102,241,0.2);">
+                <div class="skeleton" style="width:160px; height:20px; border-radius:6px; margin-bottom:16px;"></div>
+                <div class="skeleton skeleton-block w-80" style="margin-bottom:8px;"></div>
+                <div class="skeleton skeleton-block w-60" style="margin-bottom:8px;"></div>
+                <div class="skeleton skeleton-block w-80" style="margin-bottom:8px;"></div>
+                <div class="skeleton skeleton-block w-40"></div>
+            </div>
+        </div>
     </div>`;
 }
 
@@ -816,6 +868,30 @@ function setLoading(btn, isLoading, label = '') {
         ripple.style.top = `${e.clientY - rect.top - size / 2}px`;
         btn.appendChild(ripple);
         setTimeout(() => ripple.remove(), 600);
+    });
+})();
+
+/* =====================================================================
+   MAGNETIC BUTTON MICRO-INTERACTION (Stripe & Apple Precision Feel)
+   ===================================================================== */
+(function initMagneticButtons() {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (window.innerWidth < 768) return;
+
+    document.addEventListener('mousemove', e => {
+        const btn = e.target.closest('.btn-primary, .btn-demo-quick, .nav-cta');
+        if (!btn) return;
+        const rect = btn.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
+        const dx = e.clientX - cx;
+        const dy = e.clientY - cy;
+        btn.style.transform = `translate(${dx * 0.16}px, ${dy * 0.16}px)`;
+    }, { passive: true });
+
+    document.addEventListener('mouseout', e => {
+        const btn = e.target.closest('.btn-primary, .btn-demo-quick, .nav-cta');
+        if (btn) btn.style.transform = '';
     });
 })();
 
