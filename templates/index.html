@@ -665,6 +665,11 @@
                 <div class="panel-intro-title"><i class="fas fa-map-location-dot" style="color:var(--c-blue);"></i> 4-Week Targeted Upskilling Roadmap</div>
                 <div class="panel-intro-desc">Turn identified qualification gaps into a structured 4-week checklist with actionable milestones and technical topics.</div>
             </div>
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                <button class="btn-subtle" onclick="setRoadmapSkills('Docker, Kubernetes, AWS, Terraform')"><i class="fas fa-cloud"></i> Cloud DevOps</button>
+                <button class="btn-subtle" onclick="setRoadmapSkills('FastAPI, Next.js, PostgreSQL, Redis')"><i class="fas fa-layer-group"></i> Full-Stack</button>
+                <button class="btn-subtle" onclick="setRoadmapSkills('Python, PyTorch, LangChain, VectorDB')"><i class="fas fa-brain"></i> AI / ML</button>
+            </div>
         </div>
 
         <div class="form-group">
@@ -691,6 +696,7 @@
                 <div class="panel-intro-title"><i class="fas fa-code-compare" style="color:var(--c-violet);"></i> Version Delta &amp; Impact Analysis</div>
                 <div class="panel-intro-desc">Compare two iterations of a resume (before vs. after revision) to quantify added competencies, removed clutter, and overall qualification trajectory.</div>
             </div>
+            <button class="btn-subtle" onclick="loadVersionCompareDemo()"><i class="fas fa-wand-magic-sparkles"></i> Load Sample V1 vs V2</button>
         </div>
 
         <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:16px; margin-bottom:20px;">

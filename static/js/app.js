@@ -642,6 +642,40 @@ function loadDemoProfile(profileKey = 'fullstack') {
     showToast('Sample Staff Engineer profile & Job Description loaded! Click "Run Full Intelligence Analysis".', 'success');
 }
 
+function loadVersionCompareDemo() {
+    const v1 = document.getElementById('v1-text');
+    const v2 = document.getElementById('v2-text');
+    if (!v1 || !v2) return;
+
+    v1.value = `Alex Chen - Software Developer (2019-2021)
+Skills: Python, Django, HTML, CSS, JavaScript, MySQL, Git.
+
+Experience:
+- Worked on monolithic Django web application for internal tooling.
+- Wrote database queries in MySQL for generating weekly reports.
+- Helped fix bugs and user reported issues in ticketing system.
+- Maintained legacy codebase and contributed to sprint tasks.`;
+
+    v2.value = `Alex Chen - Senior Full-Stack Cloud Engineer (2021-Present)
+Skills: Python, FastAPI, Go, TypeScript, React, Next.js, PostgreSQL, Redis, Docker, Kubernetes, AWS (ECS, Lambda, Terraform), Microservices, GraphQL.
+
+Experience:
+- Architected and scaled high-throughput event processing pipeline in Go and Python, ingesting 85,000 events/sec with sub-20ms p95 latency.
+- Led migration of monolithic Django API into modular FastAPI microservices on AWS ECS, reducing infrastructure spend by 34%.
+- Instituted automated CI/CD pipelines via GitHub Actions and Terraform, accelerating release cycle from 3 hours to 12 minutes.
+- Mentored squad of 7 engineers; elevated test coverage from 58% to 92% with pytest and Jest.`;
+
+    showToast('Loaded Sample V1 (Junior Base) & V2 (Senior Revised)! Click "Analyze Version Impact".', 'success');
+}
+
+function setRoadmapSkills(skills) {
+    const el = document.getElementById('roadmap-skills');
+    if (el) {
+        el.value = skills;
+        showToast(`Loaded ${skills} into roadmap! Click "Generate 4-Week Roadmap".`, 'info');
+    }
+}
+
 /* =====================================================================
    DROPZONE & FILE MANAGEMENT HELPER
    ===================================================================== */

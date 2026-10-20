@@ -4021,6 +4021,83 @@ mark.kw-domain {
     }
 }
 
+@media (max-width: 640px) {
+    .hero-title {
+        font-size: 1.85rem !important;
+    }
+    .hero-stats {
+        gap: 6px;
+    }
+    .stat-pill {
+        width: 100%;
+        justify-content: space-between;
+    }
+    .hero-btns {
+        flex-direction: column;
+    }
+    .hero-btns .btn-primary,
+    .hero-btns .btn-demo-quick,
+    .hero-btns .btn-ghost {
+        width: 100%;
+        justify-content: center;
+    }
+    .top-navbar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+    .nav-actions {
+        justify-content: space-between;
+        width: 100%;
+    }
+    .mode-control-wrap {
+        flex: 1;
+        justify-content: space-between;
+    }
+    .showcase-actions-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .showcase-actions-row .btn-primary {
+        width: 100%;
+        justify-content: center;
+    }
+    .showcase-candidate-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .showcase-fit-score {
+        width: 100%;
+        flex-direction: row;
+        justify-content: space-between;
+        padding: 10px 16px;
+    }
+}
+
+/* =====================================================================
+   ACCESSIBILITY & FOCUS-VISIBLE SYSTEM
+   ===================================================================== */
+:focus-visible {
+    outline: 2px solid var(--c-cyan) !important;
+    outline-offset: 3px !important;
+    box-shadow: 0 0 12px var(--glow-cyan) !important;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+    outline: 2px solid var(--c-cyan) !important;
+    outline-offset: 2px !important;
+}
+
+[data-theme="light"] :focus-visible {
+    outline-color: var(--c-indigo) !important;
+    box-shadow: 0 0 10px rgba(99, 102, 241, 0.3) !important;
+}
+
 @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
         animation-duration: 0.01ms !important;
